@@ -1,0 +1,227 @@
+<template>
+  <v-row style="position:relative;">
+
+    <v-btn style="position:absolute; right:0; top:10px;" elevation="0" @click="dialogAddArticle = true"> Ajouter un
+      produit </v-btn>
+
+    <v-col cols="12">
+      <v-btn @click="getData">
+        GET DATA
+      </v-btn>
+
+      <v-card v-for="(produit, index) in produits" :key="index" @click="userData(produit)" class="pa-5 mt-5">
+        <v-row>
+          <v-col cols="7" class="pa-7 smalltitle"
+            style="font-size:20px; font-family: catamaran;font-weight: bold;font-style: normal;">
+            <v-row>Nom : {{ produit.nom }} </v-row>
+            <v-row>Quantité : {{ produit.qte }} unités </v-row>
+            <v-row>Prix: {{ produit.prix }} € </v-row>
+          </v-col>
+          <v-col cols="1">
+            <v-divider vertical></v-divider>
+          </v-col>
+          <v-col cols="4">
+            <v-img height="100px" :src="produit.image"></v-img>
+          </v-col>
+        </v-row>
+
+      </v-card>
+
+    </v-col>
+
+
+    <v-col cols="12">
+      <v-card class="mx-auto" max-width="344" v-for="item in infos" :key="item.id">
+        <v-img :src="item.image" height="200px"></v-img>
+
+        <v-card-title>
+          {{ item.nom }}
+        </v-card-title>
+
+        <v-card-subtitle>
+          Prix : {{ item.prix }} €
+        </v-card-subtitle>
+
+        <v-card-actions>
+          <v-btn color="orange lighten-2" text>
+            Explore
+          </v-btn>
+
+          <v-spacer></v-spacer>
+
+          <v-btn icon @click="show = !show">
+            <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          </v-btn>
+        </v-card-actions>
+
+        <v-expand-transition>
+          <div v-show="show">
+            <v-divider></v-divider>
+
+            <v-card-text>
+              Tailles : {{ item.taille }}
+            </v-card-text>
+          </div>
+        </v-expand-transition>
+      </v-card>
+    </v-col>
+
+
+    <template>
+      <v-row justify="center">
+
+
+        <v-dialog v-model="dialog" max-width="800">
+          <v-card v-if="selectedProduct" class="pa-7 text-center">
+            <v-row class="text-center blue-grey white--text" style="text-align:center;">
+              <h2 class="mx-auto "> {{ selectedProduct.nom }}</h2>
+            </v-row>
+
+            <v-row style="padding:5px;">
+              <v-col cols="6">
+                <v-row>
+                  <v-col cols="12">
+                    <v-img size="200px" :src="selectedProduct.image"></v-img>
+                  </v-col>
+                  
+                  <v-col cols="12" class="mt-5 ">
+                    <v-slider v-model="ex3.val" :label="ex3.label" :thumb-color="ex3.color" min="20" max="200" thumb-label="always">
+                    </v-slider>
+                  </v-col>
+
+                  <v-col cols="12">
+                    <v-btn block outlined color="success" @click="dialogConfirmation = true"> Commander <v-icon class="ml-5">mdi-cart</v-icon>
+                    </v-btn>
+                  </v-col>
+                  
+                  <v-col cols="12">
+                    <v-btn block  color="error"> Retour
+                    </v-btn>
+                  </v-col>
+
+                </v-row>
+              </v-col>
+              <v-col cols="6" style="border: 2px solid orange;">
+                  <v-row class="mt-5 ml-4">
+                      Origine : {{ selectedProduct.origine }}
+                  </v-row>
+                  <v-row class="mt-5 ml-4">
+                    Prix : {{ (selectedProduct.prix / selectedProduct.qte) * ex3.val  }} €
+                  </v-row>
+
+                  <v-row class="ml-4">
+                    Description : 
+                    <div class="mr-4" style="font-size:14px; font-weight: 200;"> Lorem ipsum dolor sit, 
+                    amet consectetur adipisicing elit. Fugit doloribus voluptas quam corrupti maiores 
+                    tempora laboriosam soluta cumque tempore. Perferendis esse ipsum fugit ratione nihil 
+                    commodi culpa deleniti dolorem mollitia.</div>
+                  </v-row>
+              </v-col>
+            </v-row>
+   <v-dialog
+        class="pa-7"
+        width="500px"
+        style="height:20vh!important"
+        v-model="dialogConfirmation"
+        
+        >
+          <v-card>
+            <v-row>
+              Voulez ajouter votre produit au panier
+            </v-row>
+            <v-btn color="success"> Oui </v-btn>
+            <v-btn @click="dialogConfirmation = false" color="error"> Non </v-btn>
+          </v-card>
+        </v-dialog>
+          </v-card>
+
+        </v-dialog>
+      </v-row>
+    </template>
+
+<template>
+      <v-row justify="center">
+
+
+        <v-dialog v-model="dialogAddArticle" max-width="800">
+          <v-card style="position:relative">
+            <AddArticle />
+            <v-btn style="position:absolute; right: 5px; bottom:5px;" outlined color="red" @click="refresh"> Retour
+            </v-btn>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+</v-row>
+</template>
+
+<script>
+    import AddArticle from '../components/AddArticle'
+    export default {
+        components: {
+            AddArticle
+        },
+        data() {
+            return {
+                ex3: {
+                    label: 'Quantité',
+                    val: 100,
+                    color: 'pink'
+                },
+                dialogAddArticle: false,
+                dialogConfirmation: true,
+                formulaireLog: null,
+                formulairePass: null,
+                show: false,
+                infos: null,
+                dialog: false,
+                selectedProduct: null,
+                produits: []
+            }
+        },
+        beforeMount() {
+            console.log('--> BEFORE MOUNT')
+            this.refresh()
+        },
+        methods: {
+            userData(produit) {
+                this.dialog = true
+                this.selectedProduct = produit
+            },
+            async getData() {
+                this.produits = []
+                    // RECUPERE TOUS LES DOCUMENTS D'UNE COLLECTION
+                this.$fire.firestore.collection('Voyage').get().then((querySnapshots) => {
+                    querySnapshots.forEach(doc => {
+                        this.produits.push(doc.data())
+                    });
+                    console.log(this.produits)
+                })
+            },
+            refresh() {
+                this.dialogAddArticle = false
+                this.dialog = false
+                this.getData()
+
+            }
+        }
+    }
+</script>
+<style>
+    @font-face {
+        font-family: "Catamaran";
+        src: url(../static/font/catamaran.ttf) format("truetype");
+    }
+    
+    @font-face {
+        font-family: "roboto";
+        src: url(../static/font/Roboto-Black.ttf) format('truetype')
+    }
+    
+    .smalltitle {
+        font-weight: 700;
+        font-style: normal;
+        color: #16181ac8;
+        font-size: 14px;
+    }
+</style>

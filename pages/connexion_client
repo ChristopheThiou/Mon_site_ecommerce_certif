@@ -1,0 +1,82 @@
+<template>
+  <container>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-card elevation="8">
+        <v-text-field 
+        v-model="identifiant"
+        class="mt-5 ml-300" 
+        background-color="black" 
+        align-self dense clearable 
+        outlined placeholder="Identifiant"></v-text-field>
+        <v-text-field 
+        v-model="mdp"
+        class="mt-5 ml-300" 
+        background-color="black" 
+        align-self dense clearable 
+        outlined placeholder="Mot de passe"></v-text-field>
+        <v-btn @click="connexion">Connexion</v-btn>
+        <v-btn @click="deconnection">Deconnexion</v-btn>
+      </v-card>
+      <v-spacer></v-spacer>
+    </v-row>
+    <v-row v-if="connected === true">
+      <v-alert type="success">Connecté</v-alert>
+    </v-row>
+    <v-row  v-else>
+      <v-alert type="error">Déconnecté</v-alert>
+    </v-row>
+    <v-row v-if="erreur1">
+      <v-alert type="warning">Mauvais mot de passe ou identifiant</v-alert>
+    </v-row>
+    <v-row v-if="erreur">
+      <v-alert type="warning">Votre mot de passe doit comporter au moins 6 caractères</v-alert>
+    </v-row>
+  </container>
+</template>
+
+<script>
+export default {
+    data(){
+      return{
+        data: null,
+        connected:false,
+        identifiant: null,
+        mdp: null,
+        defaultMdp: 'Toto123',
+        defaultUser: 'Thomas',
+        erreur: false,
+        erreur1: false
+      }
+    },
+    methods:{
+      connexion(){
+        if(this.mdp.lenggth < 6){
+          this.erreur1 = true
+          return
+        }
+        if(this.identifiant === this.defaultUser && this.mdp === this.defaultMdp){
+          localStorage.setItem('identifiant', this.identifiant);
+          localStorage.setItem('connected', true)
+          this.erreur = false
+          this.erreur1 = false
+          this.connected = true
+        }else{
+          this.erreur1 = false
+          this.erreur = true
+          this.connected = false
+        }
+      },
+      deconnection(){
+      localStorage.setItem('identifiant', null);
+      localStorage.setItem('connected', false)
+      this.connected = false
+      this.$router.replace({path: 'connexion client'})
+    },
+      async firestore(){
+        const app = this.$firestore
+        console.log(app)
+      }
+    }
+}
+</script>
