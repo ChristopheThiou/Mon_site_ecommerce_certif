@@ -13,6 +13,9 @@ $ yarn install
 # serve with hot reload at localhost:3000
 $ yarn dev
 
+# in project terminal
+$ export NODE_OPTIONS=--openssl-legacy-provider
+
 # build for production and launch server
 $ yarn build
 $ yarn start

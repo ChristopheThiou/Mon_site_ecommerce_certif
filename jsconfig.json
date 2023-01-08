@@ -1,12 +1,22 @@
 {
+  
   "compilerOptions": {
+    
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"],
       "~~/*": ["./*"],
-      "@@/*": ["./*"]
+      "@@/*": ["./*"],
+      "extensions": [".vue"]
     }
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }
+
+/* {
+  "extensions": [
+    ".vue"
+  ]
+} */
+
